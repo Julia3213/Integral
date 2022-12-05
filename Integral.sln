@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30717.126
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Integral", "Integral.csproj", "{52514B8F-AF73-4C99-924F-359B56B40155}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SetupIntegral", "..\SetupIntegral\SetupIntegral.vdproj", "{F5EA6A24-3551-40DC-8E63-1030F8A2411F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{52514B8F-AF73-4C99-924F-359B56B40155}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52514B8F-AF73-4C99-924F-359B56B40155}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52514B8F-AF73-4C99-924F-359B56B40155}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52514B8F-AF73-4C99-924F-359B56B40155}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5EA6A24-3551-40DC-8E63-1030F8A2411F}.Debug|Any CPU.ActiveCfg = Debug
+		{F5EA6A24-3551-40DC-8E63-1030F8A2411F}.Release|Any CPU.ActiveCfg = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6C327925-E2A5-494E-86A9-4C95DABEA2D8}
+	EndGlobalSection
+EndGlobal
