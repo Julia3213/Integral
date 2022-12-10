@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using AngouriMath.Extensions;
-//22
+
 namespace Integral
 {
     public partial class Form1 : Form
@@ -12,42 +12,34 @@ namespace Integral
         public Form1()
         {
             InitializeComponent();
-            table[0, 0] = "x";
-            table[0, 1] = "x^2/2";
-
-            table[1, 0] = "x^a";
-            table[1, 1] = "x^(a+1)/(a+1)";
-
-            table[2, 0] = "1/x";
-            table[2, 1] = "ln(x)";
-
-            table[3, 0] = "a^x";
-            table[3, 1] = "a^x/ln(x)";
         }
         string func;
         string method;
-        string[,] table = new string[20,2];
         double integral;
 
+        //ввод функции
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
             func="";
             func += formula.Text;
         }
 
-        
+        //функция вычисления функции методом прямоугольников
         private double rectangle_integral(AngouriMath.Core.FastExpression f, double a, double b, int n) {
             
             double dx = 1.0 * (b - a) / n;
             double sum = 0.0;
             double xstart = a + dx;
             for (int i = 0; i < n; i++) {
-                sum += f.Call(xstart + i * dx).Real;
+                sum += f.Call(a + dx/2 + i * dx).Real;
             }
             integral = sum * dx;
-            return (sum * dx);
+            if (Math.Abs(integral) < 0.000000001)
+                integral = 0;
+            return integral;
         }
 
+        //функция вычисления интеграла методом Симпсона(метод парабол)
         private double simpson_integral(AngouriMath.Core.FastExpression f, double a, double b, int n)
         {
             double h = (b - a) / (2 * n);
@@ -63,65 +55,74 @@ namespace Integral
             }
             integral += 4 * interSum;
             interSum = 0;
-            for (int i = 1; i <= n; i++)
+            for (int i = 1; i < n; i++)
             {
                 interSum += f.Call(x[2 * i]).Real;
             }
             integral += 2 * interSum;
             integral *= (h / 3);
-            integral *= 1.0;
+
+            if (Math.Abs(integral) < 0.000000001)
+                integral = 0;
             return integral;
         }
+
+        //обработчик нажатия на кнопку "Метод прямоугольников"
         private void OKButton_Click(object sender, EventArgs e)
         {
             method = "rectangle method";
             if (protection()) {
                 var compiled = func.Compile("x");
-                answerTextBox.Text = rectangle_integral(compiled, int.Parse(textBoxA.Text), int.Parse(textBoxB.Text), 100) + "";
+                answerTextBox.Text = rectangle_integral(compiled, a, b, 1000) + "";
             }
         }
 
+        //обработчик нажатия на кнопку "Метод Симпсона"
         private void simpsonButton_Click(object sender, EventArgs e)
         {
             method = "Simpson method";
             if (protection()) {
                 var compiled = func.Compile("x");
-                answerTextBox.Text = simpson_integral(compiled, int.Parse(textBoxA.Text), int.Parse(textBoxB.Text), 100) + "";
+                answerTextBox.Text = simpson_integral(compiled, a, b, 100) + "";
             }
 
         }
 
+        //ввод значения а
         private void textBoxA_TextChanged(object sender, EventArgs e)
         {
             string sa = textBoxA.Text;
             for (int i = 0; i < sa.Length; i++) {
-                if ((sa[i] < '0' || sa[i] > '9') && sa[i] != '-')
+                if ((sa[i] < '0' || sa[i] > '9') && sa[i] != '-' && sa[i]!=',')
                 {
                     textBoxA.Clear();
                     return;
                 }
             }
-            if (sa != "" && sa != "-") { 
-                a = int.Parse(textBoxA.Text);
+            if (sa != "" && sa != "-" && sa[sa.Length-1]!=',') { 
+                a = double.Parse(textBoxA.Text);
             }
         }
 
+        //ввод значения b
         private void textBoxB_TextChanged(object sender, EventArgs e)
         {
             string sb = textBoxB.Text;
             for (int i = 0; i < sb.Length; i++)
             {
-                if ((sb[i] < '0' || sb[i] > '9') && sb[i] != '-')
+                if ((sb[i] < '0' || sb[i] > '9') && sb[i] != '-' && sb[i]!=',')
                 {
                     textBoxB.Clear();
                     return;
                 }
             }
-            if (sb != "" && sb != "-")
+            if (sb != "" && sb != "-"&&sb[sb.Length-1]!=',')
             {
-                b = int.Parse(textBoxB.Text);
+                b = double.Parse(textBoxB.Text);
             }
         }
+
+        //защита от неквалифицированных действий пользователя
         private bool protection() {
             if (textBoxA.Text == "" || textBoxB.Text == "") {
                 MessageBox.Show("Please, enter the interval");
@@ -147,6 +148,7 @@ namespace Integral
             return true;
         }
 
+        //Открытие файла для считывания функции
         private void openFile_Click(object sender, EventArgs e) {
 
             openFileDialog1.Filter = "TXT(*.TXT)|*.txt";
@@ -169,11 +171,8 @@ namespace Integral
             }
         }
 
-        private void saveFileDialog1_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
-        {
 
-        }
-
+        //Сохранение файла
         private void saveFile_Click(object sender, EventArgs e)
         {
             saveFileDialog1.Filter = "TXT(*.TXT)|*.txt";
@@ -189,6 +188,7 @@ namespace Integral
             
         }
 
+        //обработчик нажатия на кнопку "Помощь"
         private void helpFile_Click(object sender, EventArgs e) {
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"help.txt");
 
@@ -198,6 +198,7 @@ namespace Integral
             MessageBox.Show(helpInf);
         }
 
+        //обработчик нажатия на кнопку "Построить график"
         private void chart_Click(object sender, EventArgs e)
         {
             if (protection()) {

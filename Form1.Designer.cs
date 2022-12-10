@@ -53,6 +53,8 @@ namespace Integral
             // 
             // formula
             // 
+            this.formula.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.formula.Location = new System.Drawing.Point(97, 31);
             this.formula.Multiline = true;
             this.formula.Name = "formula";
@@ -136,11 +138,14 @@ namespace Integral
             // 
             this.answerTextBox.Location = new System.Drawing.Point(97, 262);
             this.answerTextBox.Name = "answerTextBox";
+            this.answerTextBox.ReadOnly = true;
             this.answerTextBox.Size = new System.Drawing.Size(341, 31);
             this.answerTextBox.TabIndex = 10;
             // 
             // chart
             // 
+            this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.chart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.chart.ForeColor = System.Drawing.Color.Black;
             this.chart.Location = new System.Drawing.Point(97, 335);
@@ -196,10 +201,6 @@ namespace Integral
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
-            // 
-            // saveFileDialog1
-            // 
-            this.saveFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.saveFileDialog1_FileOk);
             // 
             // Form1
             // 

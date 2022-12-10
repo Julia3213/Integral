@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Integral
@@ -14,10 +16,13 @@ namespace Integral
         AngouriMath.Core.FastExpression fu;
         double a;
         double b;
+        double br;
         Pen pen;
         int minVX, maxVX;
         double moveX, moveY;
+        double min = 0, max = 0, propX,propY;
         double p;
+        const int chartWidth=1500, chartHeight=900;
         Graphics g;
         public Chart()
         {
@@ -43,10 +48,10 @@ namespace Integral
             g = pictureBox1.CreateGraphics();
         }
 
-        public void drawAxes(double min, double max, double propX, double propY,Graphics g) {
-
-            g.DrawLine(pen, 0, (int)(pictureBox1.Height / 2-moveY), pictureBox1.Width, (int)(pictureBox1.Height / 2-moveY));
-            g.DrawLine(pen, (int)(pictureBox1.Width / 2+moveX), 0, (int)(pictureBox1.Width / 2+moveX), pictureBox1.Height);
+        //отрисовка осей графика
+        public void drawAxes(Graphics g) {
+            g.DrawLine(pen, 0, (int)(chartHeight / 2 - moveY), chartWidth, (int)(chartHeight / 2 - moveY));
+            g.DrawLine(pen, (int)(chartWidth / 2 + moveX), 0, (int)(chartWidth / 2 + moveX), chartHeight);
 
             SolidBrush br = new SolidBrush(Color.Black);
             double k = 1;
@@ -56,60 +61,90 @@ namespace Integral
                 k = 10;
             if (max >= 100)
                 k = 25;
+            if (max >= 1000)
+                k = 100;
+            if (max >= 5000)
+                k = 200;
+            if (max >= 50000)
+                k = 1000;
+            if (max >= 100000)
+                k = 2500;
             if (max <= 2)
                 k = 0.5;
             if (max < 1)
                 k = 0.025;
             if (max < 0.5)
                 k = 0.01;
-            for (double i = min; i < max; i+=k)
+            for (double i = min; i < max; i += k)
             {
-                g.DrawLine(new Pen(Color.FromArgb(15,Color.Black)), new Point(0, (int)(pictureBox1.Height / 2 - (i * propY)-moveY)),new Point(pictureBox1.Width, (int)(pictureBox1.Height / 2 - i * propY - moveY)));
-                g.DrawLine(new Pen(Color.FromArgb(15, Color.Black)), new Point((int)(pictureBox1.Width / 2 + i * propX + moveX), 0), new Point((int)(pictureBox1.Width / 2 + i * propX + moveX), pictureBox1.Height));
+                g.DrawLine(new Pen(Color.FromArgb(15, Color.Black)), new Point(0, (int)(chartHeight / 2 - (i * propY) - moveY)), new Point(chartWidth, (int)(chartHeight / 2 - i * propY - moveY)));
+                g.DrawLine(new Pen(Color.FromArgb(15, Color.Black)), new Point((int)(chartWidth / 2 + i * propX + moveX), 0), new Point((int)(chartWidth / 2 + i * propX + moveX), chartHeight));
 
-                g.DrawString("|", new Font("Courier New", 6), br, new Point((int)(pictureBox1.Width / 2 + i * propX - 5), (int)(pictureBox1.Height / 2 - 10 - moveY)));
-                g.DrawString(Math.Round(i,2) + "", new Font("Courier New", 6), br, new Point(pictureBox1.Width / 2 + (int)(i * propX), (int)(pictureBox1.Height / 2 - moveY)));
+                g.DrawString("|", new Font("Courier New", 6), br, new Point((int)(chartWidth / 2 + i * propX - 5 + moveX), (int)(chartHeight / 2 - 10 - moveY)));
+                g.DrawString(Math.Round(i, 2) + "", new Font("Courier New", 6), br, new Point((int)(chartWidth / 2 + i * propX+moveX), (int)(chartHeight / 2 - moveY)));
 
-                g.DrawString("-", new Font("Courier New", 6), br, new Point((int)(pictureBox1.Width / 2 - 5 + moveX), (int)(pictureBox1.Height / 2 - i * propY - 7 - moveY)));
-                g.DrawString(Math.Round(i,2) + "", new Font("Courier New", 6), br, new Point((int)(pictureBox1.Width / 2 + moveX), (int)(pictureBox1.Height / 2 - i * propY - moveY)));
+                g.DrawString("-", new Font("Courier New", 6), br, new Point((int)(chartWidth / 2 - 5 + moveX), (int)(chartHeight / 2 - i * propY - 7 - moveY)));
+                g.DrawString(Math.Round(i, 2) + "", new Font("Courier New", 6), br, new Point((int)(chartWidth / 2 + moveX), (int)(chartHeight / 2 - i * propY - moveY)));
             }
+
+            SolidBrush sb = new SolidBrush(Color.FromArgb(20, Color.Blue));
+            g.FillRectangle(sb, new Rectangle((int)(chartWidth / 2 + a * propX + moveX), 0, (int)((b - a) * propX), pictureBox1.Height));
         }
-        public void drawChart(AngouriMath.Core.FastExpression f,string function,double a,double b,double min,double max) {
-            //min and max values 
-            if (min == 0 && max == 0)
+
+        //вычиление точек графика
+        public Point[] countChart() {
+            List<Point> points = new List<Point>();
+            double k=1;
+            if (max >= 200)
+                k = 5;
+            if (max >= 10000)
+                k = 10;
+            if (max <= 50)
+                k = 0.5;
+            if (max <= 30)
+                k = 0.01;
+            bool isBr = false;
+            for (double i = min; i < max; i += k)
             {
-                double dif = Math.Abs(Math.Abs(b) - Math.Abs(a));
-                min = 0 - Math.Abs(a) - dif;
-                max = -min;
+                if (double.IsNaN(fu.Call(Math.Round(i, 3)).Real) || double.IsInfinity(fu.Call(Math.Round(i, 3)).Real) || Math.Round(fu.Call(Math.Round(i, 3)).Imaginary, 3) != 0)
+                {
+                    isBr = true;
+                    br = (int)(((i)*propX)+moveX+pictureBox1.Width/2);
+                    continue;
+                }
+                if (!isBr) {
+                    if (i > 0 && i - k < 0) {
+                        br = (int)((i) * propX + moveX + pictureBox1.Width / 2);
+                    }
+                }
+                points.Add(new Point((int)(pictureBox1.Width / 2 + (i * propX) + moveX), (int)(pictureBox1.Height / 2 - (fu.Call(i).Real * propY) - moveY)));
             }
 
-            double prop = pictureBox1.Width / (max - min);
-            double propY = pictureBox1.Height / (max - min);
+            return points.ToArray();
 
+        }
+        
+        //отрисовка графика
+        public void drawChart() {
             g = Graphics.FromImage(pictureBox1.Image);
             g.Clear(Color.White);
-
-            //axes
-            drawAxes(min, max, prop, propY,g);
-
-            //integration area
-            SolidBrush sb = new SolidBrush(Color.FromArgb(20,Color.Blue));
-            g.FillRectangle(sb, new Rectangle((int)(pictureBox1.Width / 2 + a * prop), 0, (int)((b - a)*prop), pictureBox1.Height));
-
-            if (Math.Round(Math.Abs(f.Call(min).Imaginary),3) !=0)
-            {
-                MessageBox.Show(f.Call(min).Real +"+"+ f.Call(min).Imaginary + "");
-                min = 0;
-            }
-            List<Point> points = new List<Point>();
-            for (double i = min; i < max; i+=0.01) {//0.01
-                if (i == 0) {
-                    if (double.IsNaN(f.Call(i).Real))
-                        continue;
+            drawAxes(g);
+            Point[] points = countChart();
+            progressBar1.Maximum = points.Length;
+            for (int i = 1; i < points.Length; i++) {
+                if (points[i].X!=br)
+                {
+                    progressBar1.Value = i;
+                    try
+                    {
+                        g.DrawLine(pen, points[i - 1], points[i]);
+                    }
+                    catch (OverflowException) {
+                        MessageBox.Show("The interval is too long. The graph is not informative");
+                        return;
+                    }
                 }
-                points.Add(new Point((int)(pictureBox1.Width / 2 + ((float)(i) * prop) + moveX), (int)(pictureBox1.Height / 2 - ((float)f.Call(i).Real * propY) - moveY)));
             }
-            g.DrawPolygon(pen, points.ToArray());
             g.Dispose();
             pictureBox1.Invalidate();
             pictureBox1.Update();
@@ -118,10 +153,20 @@ namespace Integral
         {
         }
 
+        //кнопка "Построить график"
         private void createChartButton_Click(object sender, EventArgs e)
         {
-            drawChart(fu, "", a, b,0,0);
-            
+            if (min == 0 && max == 0)
+            {
+                double dif = Math.Abs(Math.Abs(b) - Math.Abs(a));
+                min = 0 - Math.Abs(a) - dif;
+                max = -min;
+            }
+
+            propX = chartWidth / (max - min);
+            propY = chartHeight / (max - min);
+
+            drawChart();
         }
 
 
@@ -130,29 +175,38 @@ namespace Integral
 
         }
 
-        private void pictureBox1_MouseClick(object sender, MouseEventArgs e)
-        {
-            MessageBox.Show(e.X + " " + e.Y);
-        }
 
         private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
         {
             p = trackBarZoom.Value * 1.00 / 100 * 1.00;
+            min = minVX / p;
+            max = maxVX / p;
+            propX = pictureBox1.Width / (max - min);
+            propY = pictureBox1.Height / (max - min);
             moveX = -((pictureBox1.Width / 2) / 5) * hScrollBar1.Value;
-            drawChart(fu, "", a, b, minVX / p, maxVX / p);
+
+            drawChart();
         }
         private void vScrollBar1_Scroll(object sender, ScrollEventArgs e)
         {
             p = trackBarZoom.Value * 1.00 / 100 * 1.00;
-            moveY = ((pictureBox1.Height / 2) / 5) * vScrollBar1.Value;
-            drawChart(fu, "", a, b, minVX/p, maxVX/p);
+            min = minVX / p;
+            max = maxVX / p;
+            moveY = ((pictureBox1.Height / 2) / 5) * vScrollBar1.Value; 
+            propX = pictureBox1.Width / (max - min);
+            propY = pictureBox1.Height / (max - min);
+            drawChart();
         }
 
         private void trackBarZoom_Scroll(object sender, EventArgs e)
         {
             p = trackBarZoom.Value*1.00 / 100*1.00;
+            min = minVX / p;
+            max = maxVX / p;
             label2.Text = trackBarZoom.Value + "%";
-            drawChart(fu, "", a, b, minVX/p, maxVX/p);
+            propX = pictureBox1.Width / (max - min);
+            propY = pictureBox1.Height / (max - min);
+            drawChart();
         }
 
         private void save_Click(object sender, EventArgs e) {
