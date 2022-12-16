@@ -10,7 +10,6 @@ C:\Users\korsa\source\repos\Integral\bin\Debug\netcoreapp3.1\Antlr4.Runtime.Stan
 C:\Users\korsa\source\repos\Integral\bin\Debug\netcoreapp3.1\GenericTensor.dll
 C:\Users\korsa\source\repos\Integral\bin\Debug\netcoreapp3.1\HonkSharp.dll
 C:\Users\korsa\source\repos\Integral\bin\Debug\netcoreapp3.1\Numbers.dll
-C:\Users\korsa\source\repos\Integral\obj\Debug\netcoreapp3.1\Integral.csprojAssemblyReference.cache
 C:\Users\korsa\source\repos\Integral\obj\Debug\netcoreapp3.1\Integral.Chart.resources
 C:\Users\korsa\source\repos\Integral\obj\Debug\netcoreapp3.1\Integral.Form1.resources
 C:\Users\korsa\source\repos\Integral\obj\Debug\netcoreapp3.1\Integral.csproj.GenerateResource.cache

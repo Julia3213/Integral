@@ -24,6 +24,7 @@ namespace Integral
         double p;
         const int chartWidth=1500, chartHeight=900;
         Graphics g;
+        int v = 100;
         public Chart()
         {
             InitializeComponent();
@@ -86,9 +87,6 @@ namespace Integral
                 g.DrawString("-", new Font("Courier New", 6), br, new Point((int)(chartWidth / 2 - 5 + moveX), (int)(chartHeight / 2 - i * propY - 7 - moveY)));
                 g.DrawString(Math.Round(i, 2) + "", new Font("Courier New", 6), br, new Point((int)(chartWidth / 2 + moveX), (int)(chartHeight / 2 - i * propY - moveY)));
             }
-
-            SolidBrush sb = new SolidBrush(Color.FromArgb(20, Color.Blue));
-            g.FillRectangle(sb, new Rectangle((int)(chartWidth / 2 + a * propX + moveX), 0, (int)((b - a) * propX), pictureBox1.Height));
         }
 
         //вычиление точек графика
@@ -129,6 +127,29 @@ namespace Integral
             g = Graphics.FromImage(pictureBox1.Image);
             g.Clear(Color.White);
             drawAxes(g);
+            double k = 1;
+            if (max >= 200)
+                k = 3;
+            if (max >= 10000)
+                k = 10;
+            if (max <= 50)
+                k = 0.5;
+            if (max <= 30)
+                k = 0.01;
+            if (max <= 10)
+                k = 0.001;
+            SolidBrush sb = new SolidBrush(Color.FromArgb(20, Color.Blue));
+            for (double i = a; i < b; i+=k) {
+                Point p1 = new Point((int)(i * propX + moveX + chartWidth / 2), (int)(chartHeight / 2 - (fu.Call(i).Real * propY) - moveY));
+                Point p2 = new Point((int)(i * propX + moveX + chartWidth / 2), (int)(chartHeight / 2 - moveY));
+                try
+                {
+                    g.DrawLine(new Pen(Color.FromArgb(40, Color.Blue)), p1, p2);
+                }
+                catch (OverflowException) {
+                    continue;
+                }
+            }
             Point[] points = countChart();
             progressBar1.Maximum = points.Length;
             for (int i = 1; i < points.Length; i++) {
@@ -140,7 +161,9 @@ namespace Integral
                         g.DrawLine(pen, points[i - 1], points[i]);
                     }
                     catch (OverflowException) {
+                        trackBarZoom.Value = v;
                         MessageBox.Show("The interval is too long. The graph is not informative");
+                        progressBar1.Value = points.Length;
                         return;
                     }
                 }
@@ -207,6 +230,7 @@ namespace Integral
             propX = pictureBox1.Width / (max - min);
             propY = pictureBox1.Height / (max - min);
             drawChart();
+            v = trackBarZoom.Value;
         }
 
         private void save_Click(object sender, EventArgs e) {
@@ -219,5 +243,3 @@ namespace Integral
         }
     }
 }
-
-

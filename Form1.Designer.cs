@@ -48,6 +48,8 @@ namespace Integral
             this.helpFile = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -73,6 +75,7 @@ namespace Integral
             // 
             // rectangleButton
             // 
+            this.rectangleButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.rectangleButton.Location = new System.Drawing.Point(495, 144);
             this.rectangleButton.Name = "rectangleButton";
             this.rectangleButton.Size = new System.Drawing.Size(259, 34);
@@ -117,6 +120,7 @@ namespace Integral
             // 
             // simpsonButton
             // 
+            this.simpsonButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.simpsonButton.Location = new System.Drawing.Point(495, 204);
             this.simpsonButton.Name = "simpsonButton";
             this.simpsonButton.Size = new System.Drawing.Size(259, 34);
@@ -127,6 +131,7 @@ namespace Integral
             // 
             // label4
             // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(97, 232);
             this.label4.Name = "label4";
@@ -136,6 +141,7 @@ namespace Integral
             // 
             // answerTextBox
             // 
+            this.answerTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.answerTextBox.Location = new System.Drawing.Point(97, 262);
             this.answerTextBox.Name = "answerTextBox";
             this.answerTextBox.ReadOnly = true;
@@ -202,11 +208,30 @@ namespace Integral
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(292, 144);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(84, 31);
+            this.textBox1.TabIndex = 13;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged_1);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(256, 116);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(226, 25);
+            this.label5.TabIndex = 14;
+            this.label5.Text = "Точность интегрирования";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.chart);
             this.Controls.Add(this.answerTextBox);
             this.Controls.Add(this.label4);
@@ -250,6 +275,8 @@ namespace Integral
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.ToolStripMenuItem helpFile;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label label5;
     }
 }
 

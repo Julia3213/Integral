@@ -16,6 +16,7 @@ namespace Integral
         string func;
         string method;
         double integral;
+        int acc = 1000;
 
         //ввод функции
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -73,7 +74,8 @@ namespace Integral
             method = "rectangle method";
             if (protection()) {
                 var compiled = func.Compile("x");
-                answerTextBox.Text = rectangle_integral(compiled, a, b, 1000) + "";
+                acc = (acc == 0) ? 1000 : acc;
+                answerTextBox.Text = rectangle_integral(compiled, a, b, acc) + "";
             }
         }
 
@@ -83,7 +85,7 @@ namespace Integral
             method = "Simpson method";
             if (protection()) {
                 var compiled = func.Compile("x");
-                answerTextBox.Text = simpson_integral(compiled, a, b, 100) + "";
+                answerTextBox.Text = simpson_integral(compiled, a, b, acc) + "";
             }
 
         }
@@ -196,6 +198,23 @@ namespace Integral
             string helpInf = reader.ReadToEnd();
             reader.Close();
             MessageBox.Show(helpInf);
+        }
+
+        private void textBox1_TextChanged_1(object sender, EventArgs e)
+        {
+            string sb = textBox1.Text;
+            for (int i = 0; i < sb.Length; i++)
+            {
+                if ((sb[i] < '0' || sb[i] > '9') && sb[i] != '-' && sb[i] != ',')
+                {
+                    textBox1.Clear();
+                    return;
+                }
+            }
+            if (sb != "" && sb != "-" && sb[sb.Length - 1] != ',')
+            {
+                acc = (int)((b-a)/double.Parse(textBox1.Text));
+            }
         }
 
         //обработчик нажатия на кнопку "Построить график"
