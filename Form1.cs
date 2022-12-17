@@ -27,7 +27,12 @@ namespace Integral
 
         //функция вычисления функции методом прямоугольников
         private double rectangle_integral(AngouriMath.Core.FastExpression f, double a, double b, int n) {
-            
+            for (int i = (int)a; i < (int)b; i += 1) {
+                if (double.IsNaN(f.Call(i).Real)|| double.IsInfinity(f.Call(i).Real))
+                {
+                    return double.NaN;
+                }
+            }
             double dx = 1.0 * (b - a) / n;
             double sum = 0.0;
             double xstart = a + dx;
@@ -43,6 +48,13 @@ namespace Integral
         //функция вычисления интеграла методом Симпсона(метод парабол)
         private double simpson_integral(AngouriMath.Core.FastExpression f, double a, double b, int n)
         {
+            for (int i = (int)a; i < (int)b; i += 1)
+            {
+                if (double.IsNaN(f.Call(i).Real) || double.IsInfinity(f.Call(i).Real))
+                {
+                    return double.NaN;
+                }
+            }
             double h = (b - a) / (2 * n);
             double[] x = new double[2 * n + 1];
             x[0] = a;
@@ -74,8 +86,17 @@ namespace Integral
             method = "rectangle method";
             if (protection()) {
                 var compiled = func.Compile("x");
+
+                if (double.IsInfinity((double)acc))
+                {
+                    MessageBox.Show("Accuracy could not be 0");
+                }
                 acc = (acc == 0) ? 1000 : acc;
-                answerTextBox.Text = rectangle_integral(compiled, a, b, acc) + "";
+                double answer = rectangle_integral(compiled, a, b, acc);
+                if(double.IsNaN(answer))
+                    answerTextBox.Text = "интеграл не определен";
+                else
+                    answerTextBox.Text = answer + "";
             }
         }
 
@@ -85,7 +106,17 @@ namespace Integral
             method = "Simpson method";
             if (protection()) {
                 var compiled = func.Compile("x");
-                answerTextBox.Text = simpson_integral(compiled, a, b, acc) + "";
+
+                if (double.IsInfinity((double)acc))
+                {
+                    MessageBox.Show("Accuracy could not be 0");
+                }
+                acc = (acc == 0) ? 1000 : acc;
+                double answer = simpson_integral(compiled, a, b, acc);
+                if (double.IsNaN(answer))
+                    answerTextBox.Text = "интеграл не определен";
+                else
+                    answerTextBox.Text = answer + "";
             }
 
         }
@@ -213,7 +244,18 @@ namespace Integral
             }
             if (sb != "" && sb != "-" && sb[sb.Length - 1] != ',')
             {
-                acc = (int)((b-a)/double.Parse(textBox1.Text));
+                double fraction = double.Parse(textBox1.Text);
+                if (fraction < 0.00001 && fraction!=0) { 
+                    fraction = 0.00001;
+                    textBox1.Text="0,00001";
+                    MessageBox.Show("The maximum accuracy is 0.00001.\nThis is enough to calculate the integral with an accuracy of more than 10 decimal places.");
+                }
+                if (fraction > 1) {
+                    fraction = 1;
+                    textBox1.Text = "1";
+                    MessageBox.Show("The minimum accuracy is 1");
+                }
+                acc = (int)((b-a)/fraction);
             }
         }
 

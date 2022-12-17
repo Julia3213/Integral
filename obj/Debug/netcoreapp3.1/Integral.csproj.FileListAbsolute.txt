@@ -20,3 +20,4 @@ C:\Users\korsa\source\repos\Integral\obj\Debug\netcoreapp3.1\Integral.csproj.Cop
 C:\Users\korsa\source\repos\Integral\obj\Debug\netcoreapp3.1\Integral.dll
 C:\Users\korsa\source\repos\Integral\obj\Debug\netcoreapp3.1\Integral.pdb
 C:\Users\korsa\source\repos\Integral\obj\Debug\netcoreapp3.1\Integral.genruntimeconfig.cache
+C:\Users\korsa\source\repos\Integral\obj\Debug\netcoreapp3.1\Integral.csprojAssemblyReference.cache
