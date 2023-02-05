@@ -35,7 +35,6 @@ namespace Integral
             }
             double dx = 1.0 * (b - a) / n;
             double sum = 0.0;
-            double xstart = a + dx;
             for (int i = 0; i < n; i++) {
                 sum += f.Call(a + dx/2 + i * dx).Real;
             }
